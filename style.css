@@ -44,6 +44,8 @@ a:hover{text-decoration:underline}
 .hero h1 sup{font-size:.55em}
 .hero-sub{font-size:1.35rem;font-style:italic;color:var(--gold);margin:.4rem 0 1rem}
 .hero-meta{font-size:1.18rem;font-weight:600;margin-bottom:28px;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+.hero-credit{position:absolute;right:12px;bottom:10px;z-index:2;margin:0;font-size:.72rem;
+  color:rgba(255,255,255,.72);background:rgba(0,0,0,.28);padding:3px 9px;border-radius:4px;cursor:default}
 
 /* ===== Buttons ===== */
 .btn{display:inline-block;padding:13px 30px;border-radius:6px;font-weight:700;font-size:.97rem;
