@@ -227,7 +227,9 @@
       });
     }
     track.style.setProperty('--org-shift', (-setW)+'px');
-    track.style.animationDuration = (setW/35)+'s';   // ~35 px per second
+    var dur = setW/35;                                // ~35 px per second
+    track.style.animationDuration = dur+'s';
+    track.style.animationDelay = (-Math.random()*dur)+'s';  // start at a random point in the loop
   }
   build();
   var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(build,200); });
