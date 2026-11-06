@@ -28,7 +28,9 @@
   CU Boulder campus (sandstone buildings), Pearl Street Mall, mountains/summer outdoors.
 
   PHOTO–NAME MAPPING (please verify!): image2->Wyatt Shields, image3->Ankur Gupta,
-  image4->Dan Schwartz, image5->Mark Borden, image6->Xiaoyun Ding, image8->Nuris Figueroa Morales.
+  image4->Dan Schwartz, image5->Mark Borden, image6->Xiaoyun Ding.
+  ORGANIZER ORDER is shuffled randomly on every page load and the row scrolls slowly
+  (script at bottom; static row if the visitor prefers reduced motion).
 -->
 </head>
 <body>
@@ -162,7 +164,7 @@
   <div class="container">
     <h2>Conference Organizers</h2>
     <p class="muted center">University of Colorado Boulder</p>
-    <div class="org-grid">
+    <div class="org-orbit"><div class="org-track">
       <figure class="org"><a href="https://www.colorado.edu/chbe/c-wyatt-shields-iv" target="_blank" rel="noopener">
         <img src="assets/image2.jpeg" alt="Wyatt Shields"><figcaption><strong>Wyatt Shields</strong><span>Chemical &amp; Biological Engineering</span></figcaption></a></figure>
       <figure class="org"><a href="https://www.colorado.edu/chbe/ankur-gupta" target="_blank" rel="noopener">
@@ -171,11 +173,9 @@
         <img src="assets/image4.jpeg" alt="Dan Schwartz"><figcaption><strong>Dan Schwartz</strong><span>Chemical &amp; Biological Engineering</span></figcaption></a></figure>
       <figure class="org"><a href="https://www.colorado.edu/mechanical/mark-borden" target="_blank" rel="noopener">
         <img src="assets/image5.jpeg" alt="Mark Borden"><figcaption><strong>Mark Borden</strong><span>Mechanical Engineering</span></figcaption></a></figure>
-      <figure class="org"><a href="https://www.colorado.edu/physics/nuris-figueroa-morales" target="_blank" rel="noopener">
-        <img src="assets/image8.png" alt="Nuris Figueroa Morales"><figcaption><strong>Nuris Figueroa Morales</strong><span>Physics</span></figcaption></a></figure>
       <figure class="org"><a href="https://www.colorado.edu/mechanical/xiaoyun-sean-ding" target="_blank" rel="noopener">
         <img src="assets/image6.jpeg" alt="Xiaoyun Ding"><figcaption><strong>Xiaoyun Ding</strong><span>Mechanical Engineering</span></figcaption></a></figure>
-    </div>
+    </div></div>
   </div>
 </section>
 
@@ -195,6 +195,44 @@
     <p>Hosted by the University of Colorado Boulder. © 2027 ACS Colloids 2027.</p>
   </div>
 </footer>
+
+<!-- ============ ORGANIZERS: random order + slow continuous scroll ============ -->
+<script>
+(function(){
+  var orbit = document.querySelector('.org-orbit'), track = document.querySelector('.org-track');
+  if(!orbit || !track) return;
+  var items = Array.prototype.slice.call(track.children);
+  for(var i=items.length-1;i>0;i--){            // Fisher-Yates shuffle: no fixed order
+    var j=Math.floor(Math.random()*(i+1)); var t=items[i]; items[i]=items[j]; items[j]=t;
+  }
+  items.forEach(function(el){ track.appendChild(el); });
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  function build(){
+    // remove old clones, then measure one set
+    Array.prototype.slice.call(track.querySelectorAll('.org-clone')).forEach(function(c){ c.remove(); });
+    orbit.classList.add('moving');
+    var setW = items.reduce(function(w,el){
+      var cs = getComputedStyle(el);
+      return w + el.offsetWidth + parseFloat(cs.marginLeft) + parseFloat(cs.marginRight);
+    }, 0);
+    if(!setW) return;
+    // enough copies that the loop never shows a gap
+    var copies = Math.ceil(orbit.offsetWidth / setW) + 1;
+    for(var k=0;k<copies;k++){
+      items.forEach(function(el){
+        var c = el.cloneNode(true); c.classList.add('org-clone'); c.setAttribute('aria-hidden','true');
+        c.querySelectorAll('a').forEach(function(a){ a.setAttribute('tabindex','-1'); });
+        track.appendChild(c);
+      });
+    }
+    track.style.setProperty('--org-shift', (-setW)+'px');
+    track.style.animationDuration = (setW/35)+'s';   // ~35 px per second
+  }
+  build();
+  var rt; window.addEventListener('resize', function(){ clearTimeout(rt); rt=setTimeout(build,200); });
+})();
+</script>
 
 <!-- ============ CAROUSEL SCRIPT ============ -->
 <script>
